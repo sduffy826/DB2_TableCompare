@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
  */
 public class Db2Table {
   private double pctThreshold = 10.0;  // If over this amt then indicator displayed in output (*)
+  private static final boolean SHOWEVENIFNOCHANGE = true;
   private String schema;
   private String name;
   private String type;
@@ -93,7 +94,7 @@ public class Db2Table {
 
     // Build return string
     String rtnString = null;
-    if (shouldReport) {
+    if (shouldReport || SHOWEVENIFNOCHANGE) {
       if (_wantCSVOutput) {
         rtnString = "`" + colCountPrefix + "`," + "`" + pctPrefix + "`,"
             + this.toCSV() + "," + "`other table colCount`,"
