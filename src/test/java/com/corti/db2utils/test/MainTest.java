@@ -48,7 +48,7 @@ public class MainTest {
    */
   private boolean checkArgs(String[] args) {
     boolean returnValue = false;
-    if (args.length != 6)
+    if (args.length < 6)  // Allow more than 6 so that we can have other parms in eclipse argument pane (only first 6 looked at)
       logger.severe("Must pass odbcName1 userid1 password1  odbcName2 userid2 password2");
     else {
       logger.info("classpath is: " + System.getProperty("java.class.path"));
