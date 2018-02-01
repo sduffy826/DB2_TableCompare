@@ -217,6 +217,7 @@ public class GetTables {
     Map<String, Db2Table> otherMap = _otherTables.getMap();
 
     logger.info("Comparing tables");
+    logger.info("First: " + this.odbc + " Second: " + _otherTables.odbc);
     for (Map.Entry<String, Db2Table> entry : tableLookup.entrySet()) {
       Db2Table myObj = entry.getValue();
       Db2Table otherObj = otherMap.get(entry.getKey());

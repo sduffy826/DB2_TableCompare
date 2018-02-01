@@ -10,14 +10,14 @@ import com.corti.javalogger.LoggerUtils;
 
 /*
  * Class to compare tables in different schemas; the first schema argument is used to search for
- * tables in the other one; if the table is found then it'll be compared.  For examply say you have
+ * tables in the other one; if the table is found then it'll be compared.  For example say you have
  * an 'archive' schema that has a subset of tables in the 'base' schema; then you'd want to pass
  * the 'archive' as the first set of arguments and the 'base' as the second... that way each table
  * in 'archive' will be looked at agains the 'base'.   
  */
 public class CompareTablesInDiffSchemas {
   private static Logger logger = null;
-  private static final boolean showTables = true;
+  private static final boolean showTables = false;
   private static final boolean reportSameStructure = false;
   
   private String schema1;
@@ -64,6 +64,7 @@ public class CompareTablesInDiffSchemas {
       // If want to show the tables in the first list then write em out :)
       if (showTables) {
         for (String aTable : myList) {
+          logger.info("List of tables in schema");
           logger.info(aTable);
         }
       }

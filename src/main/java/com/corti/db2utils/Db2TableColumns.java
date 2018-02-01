@@ -94,8 +94,9 @@ public class Db2TableColumns {
         if (otherRow == null) {
           diffData.append("\nNot in other table: " + firstRow.toString());
         }
-        else if (firstRow.matchesOtherRow(otherRow) == false) {
-          if (i == 0) diffData.append("\nDiff attributes: " + firstRow.toString());
+        else if (firstRow.almostMatchesOtherRow(otherRow) == false) {
+          if (i == 0) diffData.append("\nDiff attributes: " + firstRow.toString() + 
+                                      "\n" + otherRow.toString() + "\n");
         }
       }     
     }

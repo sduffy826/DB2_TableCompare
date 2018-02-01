@@ -6,13 +6,17 @@ import com.corti.db2utils.*;
 import com.corti.javalogger.LoggerUtils;
 
 /**
+ * This program compares the tables in two different databases.  It:
+ *   1) identifies the tables that are in one and not the other
+ *   2) identifies if the number of columns in the tables differ
+ *   3) Compares record counts; if more than 
  * This is the main line program to compare tables in two different databases; when invoked you
  * should pass in the odbcString, userId, pw for the first db, then follow it by the same fields
  * for the scond database.
  * 
  * @author sduffy
  */
-public class MainTest {
+public class IdentifyTableDifferencesInTwoDatabases {
   private static final String JDBC_DRIVER = "COM.ibm.db2.jdbc.app.DB2Driver";
   private Logger logger = null;
   private GetTables getTables1 = null;
@@ -25,7 +29,7 @@ public class MainTest {
   public static void main(java.lang.String[] args) {
 
     try {
-      MainTest app = new MainTest();              
+      IdentifyTableDifferencesInTwoDatabases app = new IdentifyTableDifferencesInTwoDatabases();              
       
       // register the db2 jdbc driver with DriverManager
       Class.forName(JDBC_DRIVER).newInstance();
@@ -65,9 +69,9 @@ public class MainTest {
   /**
    * Create object and get logger object
    */
-  private MainTest() {
+  private IdentifyTableDifferencesInTwoDatabases() {
     super();
-    logger = (new LoggerUtils()).getLogger("DB2TableCompare", "DB2TableCompareLogger", true);
+    logger = (new LoggerUtils()).getLogger("DB2TableCompare", "IdentifyTableDifferences", true);
   }
   
   /**

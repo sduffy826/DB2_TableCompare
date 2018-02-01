@@ -73,6 +73,31 @@ public class Db2TableColumn {
             (this.getColumnLength() == otherRow.getColumnLength()) &&
             (this.getColumnScale() == otherRow.getColumnScale()) );
   }
+
+  // Return true if this records almost match, just doesn't compare column number
+  public boolean almostMatchesOtherRow(Db2TableColumn otherRow) {
+    return ((this.getColumnName().compareTo(otherRow.getColumnName()) == 0) &&
+            (this.getColumnNulls().compareTo(otherRow.getColumnNulls()) == 0) &&
+            almostSameColumnType(this, otherRow) &&
+            (this.getColumnLength() == otherRow.getColumnLength()) &&
+            (this.getColumnScale() == otherRow.getColumnScale()) );
+  }
+  
+  // Returns TRUE if the column types 'almost' match... i.e. some db's want CHAR data
+  // defined as GRAPHIC so though they're not the same they are 'almost' the same :)  Did this
+  // cause when reporting differences in schema's I didn't want to report this as a 
+  // difference.
+  public boolean almostSameColumnType(Db2TableColumn col1, Db2TableColumn col2) {
+    String colType1 = col1.getColumnType().toUpperCase();
+    String colType2 = col2.getColumnType().toUpperCase();
+    if (colType1.compareTo(colType2) == 0) return true;  // Same
+    
+    if ("CHAR GRAPHIC".indexOf(colType1) >= 0) return ("CHAR GRAPHIC".indexOf(colType2) >= 0);
+    if ("VARCHAR VARGRAPH".indexOf(colType1) >= 0) return ("VARCHAR VARGRAPH".indexOf(colType2) >= 0);
+    return false;
+  }
+  
+  
   
   @Override
   public String toString() {
