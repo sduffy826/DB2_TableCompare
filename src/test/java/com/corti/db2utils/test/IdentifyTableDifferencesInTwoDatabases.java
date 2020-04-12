@@ -12,12 +12,13 @@ import com.corti.javalogger.LoggerUtils;
  *   3) Compares record counts; if more than 
  * This is the main line program to compare tables in two different databases; when invoked you
  * should pass in the odbcString, userId, pw for the first db, then follow it by the same fields
- * for the scond database.
+ * for the second database.
  * 
  * @author sduffy
  */
 public class IdentifyTableDifferencesInTwoDatabases {
-  private static final String JDBC_DRIVER = "COM.ibm.db2.jdbc.app.DB2Driver";
+  // private static final String JDBC_DRIVER = "COM.ibm.db2.jdbc.app.DB2Driver";
+  private static final String JDBC_DRIVER = "com.ibm.db2.jcc.DB2Driver";
   private Logger logger = null;
   private GetTables getTables1 = null;
   private GetTables getTables2 = null;  

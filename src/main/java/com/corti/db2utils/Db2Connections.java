@@ -12,7 +12,8 @@ import com.corti.javalogger.LoggerUtils;
 public class Db2Connections {
   private static final boolean DEBUGIT = true;
   
-  private static final String JDBC_DRIVER = "COM.ibm.db2.jdbc.app.DB2Driver";
+  // private static final String JDBC_DRIVER = "COM.ibm.db2.jdbc.app.DB2Driver";
+  private static final String JDBC_DRIVER = "com.ibm.db2.jcc.DB2Driver";
  
   private static Db2Connections me = null;
   private static Map<String, Connection> connections = null;

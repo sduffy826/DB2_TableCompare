@@ -14,6 +14,7 @@ public class GetTableInfo {
   private String odbcName;
   private String userid;
   private String password;  
+  private boolean isAHostTable;
   
   private Connection db2Connection = null;
   //
@@ -28,11 +29,18 @@ public class GetTableInfo {
     if (args.length < 5)  
       logger.severe("Must pass odbcName userid password schema tableName ");
     else {
-      odbcName = args[0];
-      userid = args[1];
-      password = args[2];
-      schema = args[3];
-      tableName = args[4];
+      odbcName     = args[0];
+      userid       = args[1];
+      password     = args[2];
+      schema       = args[3];
+      tableName    = args[4];
+      isAHostTable = false;
+      if ((args.length > 5) && (args[5].trim().equalsIgnoreCase("y"))) {
+        System.out.println("Is a host table");
+
+        isAHostTable = true;
+      }
+      
       returnValue = true;
     }
     return returnValue;
@@ -44,7 +52,7 @@ public class GetTableInfo {
     if (checkArgs(args)) {
       db2Connection = Db2Connections.getInstance().getConnection(odbcName, userid, password);
       
-      Db2TableColumns db2TableColumns = new Db2TableColumns(db2Connection, schema, tableName);
+      Db2TableColumns db2TableColumns = new Db2TableColumns(db2Connection, schema, tableName, isAHostTable);
       
       logger.info(db2TableColumns.toCsvString());
       

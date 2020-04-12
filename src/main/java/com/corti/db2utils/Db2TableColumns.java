@@ -18,13 +18,26 @@ public class Db2TableColumns {
   private String schema;
   private String tableName;
   private Connection db2Connection;
+  private Boolean isHostTable;
   
   public Db2TableColumns(Connection db2Connection, String schema, String tableName) {
     this.db2Connection = db2Connection;
     this.schema        = schema.trim();
     this.tableName     = tableName.trim();
+    this.isHostTable   = false;
     init();    
   }
+  
+  // This version is called with a boolean to identify if table is on host system (vm or mvs), that uses
+  // different catalog attributes
+  public Db2TableColumns(Connection db2Connection, String schema, String tableName, Boolean isHostTable) {
+    this.db2Connection = db2Connection;
+    this.schema        = schema.trim();
+    this.tableName     = tableName.trim();
+    this.isHostTable   = isHostTable;
+    init();    
+  }
+    
   
   public List<Db2TableColumn> getColumns() {
     return new ArrayList<Db2TableColumn>(db2Columns);
@@ -34,15 +47,29 @@ public class Db2TableColumns {
     return db2ColumnLookup.get(columnName);
   }
   
+  // Little helper, if object passed in is null, or empty string then return
+  // zero else return the value (as an int)
+  public int nullIntHelper(Object obj2Check) {
+   
+    if (obj2Check == null) return 0;
+    
+    if (obj2Check instanceof Integer) return ((Integer)obj2Check).intValue();
+   
+    // Not null or Integer, must be string
+    String stringObj = ((String)obj2Check).trim();
+    
+    if (stringObj.length() == 0) return 0;
+    
+    return Integer.parseInt(stringObj);
+  }
+  
   public void init() {
     db2Columns = new ArrayList<Db2TableColumn>();
     db2ColumnLookup = new HashMap<String, Db2TableColumn>();
     String query = buildQuery();
-
     PreparedStatement stmt;
     try {
       stmt = db2Connection.prepareStatement(query);
-
       // execute the query
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
@@ -52,9 +79,10 @@ public class Db2TableColumns {
             rs.getInt(4), // column number
             rs.getString(5), // nulls flag
             rs.getString(6), // column type
-            rs.getInt(7), // column length
+            nullIntHelper(rs.getObject(7)), // column length
             rs.getInt(8) // column length scale
-        );
+            );
+        
         db2Columns.add(db2TableColumn);
         db2ColumnLookup.put(db2TableColumn.getColumnName(), db2TableColumn);
       }
@@ -65,6 +93,8 @@ public class Db2TableColumns {
       e.printStackTrace();
     }
   }
+  
+  
   
   // Return returns true if table structures are different, we call other method to do
   // the work
@@ -105,9 +135,16 @@ public class Db2TableColumns {
   
   // Return string for the query to get columns
   private String buildQuery() {
-    return "select tbname, tbcreator, name, colno, nulls, coltype, length, scale" +
-           " from sysibm.syscolumns where tbcreator = '" + schema.toUpperCase() + "'" +
-           " and tbname = '" + tableName.toUpperCase() + "' order by colno";
+    if ( isHostTable == false ) {
+      return "select tbname, tbcreator, name, colno, nulls, coltype, length, scale" +
+             " from sysibm.syscolumns where tbcreator = '" + schema.toUpperCase() + "'" +
+             " and tbname = '" + tableName.toUpperCase() + "' order by colno";
+    }
+    else {
+      return "select tname, creator, cname, colno, nulls, coltype, length, 0" +
+             " from system.syscolumns where creator = '" + schema.toUpperCase() + "'" +
+             " and tname = '" + tableName.toUpperCase() + "' order by colno";
+    }
   }
     
   // Return table attributes as a string (each row on own line)
